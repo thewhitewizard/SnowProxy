@@ -48,7 +48,7 @@ Use curl or Postman to test RPC:
 ``` bash
 curl -k https://localhost:8545/ext/bc/C/rpc -X POST \
   -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","id":1,"method":"eth_chainId","params":[]}'
+  -d '{"jsonrpc":"2.0","id":1,"method":"eth_blockNumber","params":[]}'
 ```
 
 ### 5. 📊 Monitoring
