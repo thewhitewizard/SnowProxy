@@ -1,0 +1,37 @@
+
+services:
+  haproxy:
+    image: haproxy:2.6
+    container_name: rpc-relay
+    restart: unless-stopped
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./certs:/usr/local/etc/hacerts
+      - haproxy_sock:/var/run/haproxy
+    ports:
+      - "8545:8545"
+      - "8404:8404"
+    labels:
+      - "prometheus.enable=true"
+      - "prometheus.port=8404"
+      - "prometheus.scrape=true"
+    environment:
+      - TZ=UTC
+
+  haproxy-exporter:
+    image: quay.io/prometheus/haproxy-exporter:v0.15.0
+    container_name: haproxy-exporter
+    restart: unless-stopped
+    ports:
+      - "9101:9101"
+    command:
+      - "--haproxy.scrape-uri=http://haproxy:8404/stats?stats;csv"
+    depends_on:
+      - haproxy
+
+volumes:
+  haproxy_sock:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
